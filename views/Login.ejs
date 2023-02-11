@@ -1,0 +1,26 @@
+
+
+<div  >
+
+    <div class="login" style="z-index: -1;">
+        <%- include('partials/messages') -%>
+   
+
+        <h3 >Login Here</h3>
+        <hr style="background-color:white; height:4px;">
+
+        <a class="btn btn-danger" href="/google">Google</a>
+        <a class="btn btn-info" href="/facebook">Facebook</a>
+        <br ><br>
+   
+        <div class="form">
+            <form action="Login" method="POST">
+                Email:<br>
+                <input type="email" required placeholder="Email" name="Email"><br>
+                Password:<br>
+                <input type="password" required placeholder="Your Password" name="password"><br>
+                <input type="submit" value="Login"> OR <span> <a href="/Register" style="color: tomato; text-decoration: underline;" id="register">Register</a></span>
+            </form>
+        </div>
+    </div>
+</div>

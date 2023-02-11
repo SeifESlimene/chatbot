@@ -1,0 +1,129 @@
+
+<input type="hidden" name="user" id="userName" value="<%= user[0].username %>">
+<input type="hidden" name="user" id="userID" value="<%= user[0]._id %>">
+<input type="hidden" name="user" id="userEmail" value="<%= user[0].email %>">
+
+<div class="chats" id="chatDiv" style="display: none;">
+    <div id=userInfo>
+
+    <span id="username"></span><br>
+    <span id="type"></span>
+    </div>
+    
+    <!-- Sending chat and displaying it -->
+     <div id="chatContainer" >
+
+
+         <div class="msg-container" id="msg-container">
+        </div>
+
+        <div class="bottom" id="bottom">
+            <form action="">
+                <input type="text" placeholder="Enter Your message..." name="msg" id="msg">
+         <input type="submit" value="Send" id="send">
+            </form>
+        </div>
+         </div>
+
+  </div>
+
+
+<div class="friends" id="friendDiv">
+    <input type="text" placeholder="Search Friends..." name="search" id="frnd-name">
+    <button id="searchButt" class="btn btn-success">Search</button><br>
+
+    <div class="usersCount col-12">
+        
+    <span class="allUsers" id="allUsers">All Users(<span id="userCount" class="userCount"></span>)</span>
+    <span class="onlineUsers" id="onlineUsers">Online Users(<span id="onlineCount" class="onlineCount"></span>)</span>
+    </div>
+    <div class="col-sm-12">
+        
+    <ul class="friends-list" id="frndUL">
+        
+    </ul>
+
+    </div>
+
+</div>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            var socket=io();
+
+            
+            let allUsers=[];
+            let onlineUsers=[]
+
+            
+
+            // let params=new URLSearchParams(location.search);
+            // var name=params.get('name')
+            // var deptt=params.get('select')
+           let username=document.getElementById('userName').value
+           let email=document.getElementById('userEmail').value
+           let id=document.getElementById('userID').value
+           let user={
+               username,
+               email,
+               id
+           }
+
+
+            socket.emit('user',user)
+
+            var div=document.getElementById('msg-container');
+
+            //Welcome a user
+            socket.on('welcome',(data)=>{
+
+
+                let frndUL=document.getElementById('frndUL')
+
+                for(let i=0;i<data.Friends.length;i++){
+                       allUsers.push(data.Friends[i])
+                    
+                let list=document.createElement('li')
+                list.innerHTML=`${data.Friends[i].username}`
+                list.classList.add('frndli')
+
+                let check=data.Friends[i].status    
+
+                if(check == 1){
+                        onlineUsers.push(data.Friends[i])
+                        let icon=document.createElement('i')
+                        icon.classList.add('fa')
+                        icon.classList.add('fa-circle')
+                        icon.classList.add('online')
+                        list.appendChild(icon)       
+
+                }
+                frndUL.appendChild(list)
+
+      }
+      show()
+
+            })
+
+
+            
+            //Notifiying others users 
+            socket.on('newUser',(data)=>{
+
+                var para=document.createElement('p')
+                para.innerHTML=`${data.username} has joined the chat`;
+                div.appendChild(para)
+
+
+            })
+
+
+            //Broadcasting a message when a user left
+            socket.on('userLeft',(data)=>{
+                var para=document.createElement('p')
+                para.innerHTML=`${data}`;
+                div.appendChild(para)
+                
+            })
+
+        </script>
